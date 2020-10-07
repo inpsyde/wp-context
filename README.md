@@ -2,6 +2,10 @@
 
 A single-class utility to check the current request context in WordPress sites.
 
+---
+![PHP Quality Assurance](https://github.com/inpsyde/wp-context/workflows/PHP%20Quality%20Assurance/badge.svg)
+---
+
 ## How to use
 
 This is a Composer package, not a plugin, so first it needs to be installed via Composer.
