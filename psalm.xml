@@ -10,7 +10,6 @@
     useAssertForType="true"
     rememberPropertyAssignmentsAfterCall="true"
     allowPhpStormGenerics="true"
-    allowCoercionFromStringToClassConst="true"
     allowStringToStandInForClass="false"
     memoizeMethodCallResults="false"
     hoistConstants="false"
