@@ -1,0 +1,58 @@
+{
+    "name": "inpsyde/wp-context",
+    "type": "library",
+    "description": "A single-class utility to check the running context in WordPress sites.",
+    "license": "gpl-2.0-or-later",
+    "authors": [
+        {
+            "name": "Inpsyde GmbH",
+            "homepage": "https://inpsyde.com/",
+            "email": "hello@inpsyde.com",
+            "role": "Company"
+        },
+        {
+            "name": "Giuseppe Mazzapica",
+            "email": "g.mazzapica@inpsyde.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8 || ^9",
+        "inpsyde/php-coding-standards": "^1",
+        "vimeo/psalm": "@stable",
+        "brain/monkey": "^2",
+        "roots/wordpress": "@stable"
+    },
+    "autoload": {
+        "psr-4": {
+            "Inpsyde\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Inpsyde\\Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "cs": "@php ./vendor/squizlabs/php_codesniffer/bin/phpcs",
+        "psalm": "@php ./vendor/vimeo/psalm/psalm",
+        "tests": "@php ./vendor/phpunit/phpunit/phpunit",
+        "tests:no-cov": "@php ./vendor/phpunit/phpunit/phpunit --no-coverage",
+        "qa": [
+            "@cs",
+            "@psalm",
+            "@tests:no-cov"
+        ]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        },
+        "wordpress-install-dir": "vendor/roots/wordpress"
+    }
+}
