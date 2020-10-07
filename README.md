@@ -80,7 +80,10 @@ if (Inpsyde\WpContext::determine()->isCore()) {
 ```
 
 which might look very fine, could break if `WP_INSTALLING` is true, considering in that case the 
-options table might not be there at all.
+options table might not be there at all. Thanks to the fact that `WpContext::isCore()` returns false
+when `WP_INSTALLING` is true the `get_option` call above is not executed during installation (when
+it is not safe to call).
+
 
 
 ## Ok, but why?
