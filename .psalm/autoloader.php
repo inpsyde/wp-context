@@ -8,6 +8,7 @@ define('WPINC', 'wp-includes');
 define('WP_CONTENT_DIR', ABSPATH . 'wp-content');
 
 require_once ABSPATH . WPINC . '/class-wp-rewrite.php';
+require_once ABSPATH . 'wp-admin/includes/class-wp-screen.php';
 require_once ABSPATH . WPINC .'/plugin.php';
 require_once ABSPATH . WPINC .'/load.php';
 require_once ABSPATH . WPINC .'/functions.php';

@@ -307,8 +307,8 @@ final class WpContext implements \JsonSerializable
             },
         ];
 
-        foreach ($this->actionCallbacks as $key => $callback) {
-            add_action($key, $callback, PHP_INT_MIN);
+        foreach ($this->actionCallbacks as $action => $callback) {
+            add_action($action, $callback, PHP_INT_MIN);
         }
     }
 
@@ -320,8 +320,8 @@ final class WpContext implements \JsonSerializable
      */
     private function removeActionHooks(): void
     {
-        foreach ($this->actionCallbacks as $key => $callback) {
-            remove_action($key, $callback, PHP_INT_MIN);
+        foreach ($this->actionCallbacks as $action => $callback) {
+            remove_action($action, $callback, PHP_INT_MIN);
         }
     }
 
