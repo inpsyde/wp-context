@@ -47,6 +47,7 @@ The full list of contexts that can be checked is:
 - `->is(WpContext::BACKOFFICE)` / `->isBackoffice()`
 - `->is(WpContext::AJAX)` / `->isAjax()`
 - `->is(WpContext::LOGIN)` / `->isLogin()`
+- `->is(WpContext::REST)` / `->isRest()`
 - `->is(WpContext::CRON)` / `->isCron()`
 - `->is(WpContext::CLI)` / `->isWpCli()`
 - `->is(WpContext::XML_RPC)` / `->isXmlRpc()`
