@@ -10,18 +10,18 @@ A single-class utility to check the current request context in WordPress sites.
 
 This is a Composer package, not a plugin, so first it needs to be installed via Composer.
 
-After that, assuming Composer autoload file is loaded, very early in the load process, it is possible
-to instantiate `WPContext` like this:
+After that, assuming Composer autoload file is loaded, very early in the load process it is possible
+to instantiate the `WpContext` like this:
 
 ```php
 $context = Inpsyde\WpContext::determine();
 ```
 
-The library does not implement singleton pattern, nor cache the retrieval of the current context,
+The library does not implement singleton pattern, nor caches the retrieval of the current context,
 so it might be a good idea to save the created instance somewhere globally accessible in your
 plugin/theme/package/application.
 
-Having an instance of `WpContext` it is possible to check the current context via its `is` method,
+Having an instance of `WpContext`, it is possible to check the current context via its `is` method,
 or context-specific methods.
 
 For example:
