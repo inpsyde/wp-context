@@ -163,6 +163,8 @@ final class WpContext implements \JsonSerializable
             $data[self::CORE] = true;
         }
 
+        $this->data = $data;
+
         return $this;
     }
 
