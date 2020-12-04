@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Inpsyde;
 
-final class WpContext implements \JsonSerializable
+use JsonSerializable;
+use WP_Rewrite;
+use WP_Screen;
+
+final class WpContext implements JsonSerializable
 {
     public const AJAX = 'ajax';
     public const BACKOFFICE = 'backoffice';
@@ -107,7 +111,7 @@ final class WpContext implements \JsonSerializable
         // by get_rest_url(). WP will reuse what we set here, or in worst case will replace, but no
         // consequences for us in any case.
         if (get_option('permalink_structure') && empty($GLOBALS['wp_rewrite'])) {
-            $GLOBALS['wp_rewrite'] = new \WP_Rewrite();
+            $GLOBALS['wp_rewrite'] = new WP_Rewrite();
         }
 
         $currentUrl = set_url_scheme(add_query_arg([]));
@@ -304,7 +308,7 @@ final class WpContext implements \JsonSerializable
             'template_redirect' => function (): void {
                 $this->resetAndForce(self::FRONTOFFICE);
             },
-            'current_screen' => function (\WP_Screen $screen): void {
+            'current_screen' => function (WP_Screen $screen): void {
                 $screen->in_admin() and $this->resetAndForce(self::BACKOFFICE);
             },
         ];
