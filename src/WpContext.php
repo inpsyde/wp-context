@@ -31,7 +31,7 @@ final class WpContext implements \JsonSerializable
     ];
 
     /**
-     * @var array
+     * @var array<string, bool>
      */
     private $data;
 
@@ -138,7 +138,7 @@ final class WpContext implements \JsonSerializable
     }
 
     /**
-     * @param array $data
+     * @param array<string, bool> $data
      */
     private function __construct(array $data)
     {
@@ -277,9 +277,9 @@ final class WpContext implements \JsonSerializable
     }
 
     /**
-     * @return array
+     * @return array<string, bool>
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->data;
     }
