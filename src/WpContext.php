@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Inpsyde;
+namespace Inpsyde\WordPress;
 
-final class WpContext implements \JsonSerializable
+final class Context implements \JsonSerializable
 {
     public const AJAX = 'ajax';
     public const BACKOFFICE = 'backoffice';
@@ -41,17 +41,17 @@ final class WpContext implements \JsonSerializable
     private $actionCallbacks = [];
 
     /**
-     * @return WpContext
+     * @return Context
      */
-    public static function new(): WpContext
+    public static function new(): Context
     {
         return new static(array_fill_keys(self::ALL, false));
     }
 
     /**
-     * @return WpContext
+     * @return Context
      */
-    public static function determine(): WpContext
+    public static function determine(): Context
     {
         $installing = defined('WP_INSTALLING') && WP_INSTALLING;
         $xmlRpc = defined('XMLRPC_REQUEST') && XMLRPC_REQUEST;
@@ -147,9 +147,9 @@ final class WpContext implements \JsonSerializable
 
     /**
      * @param string $context
-     * @return WpContext
+     * @return Context
      */
-    public function force(string $context): WpContext
+    public function force(string $context): Context
     {
         if (!in_array($context, self::ALL, true)) {
             throw new \LogicException("'{$context}' is not a valid context.");
@@ -169,9 +169,9 @@ final class WpContext implements \JsonSerializable
     }
 
     /**
-     * @return WpContext
+     * @return Context
      */
-    public function withCli(): WpContext
+    public function withCli(): Context
     {
         $this->data[self::CLI] = true;
 
