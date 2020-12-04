@@ -1,10 +1,9 @@
 # WP Context
 
-A single-class utility to check the current request context in WordPress sites.
+[![PHP Quality Assurance](https://github.com/inpsyde/wp-context/workflows/PHP%20Quality%20Assurance/badge.svg)](https://github.com/inpsyde/wp-context/actions?query=workflow%3A%22PHP+Quality+Assurance%22)
+[![Packagist Version](https://img.shields.io/packagist/v/inpsyde/wp-context)](https://packagist.org/packages/inpsyde/wp-context)
 
----
-![PHP Quality Assurance](https://github.com/inpsyde/wp-context/workflows/PHP%20Quality%20Assurance/badge.svg)
----
+A single-class utility to check the current request context in WordPress sites.
 
 ## How to use
 
