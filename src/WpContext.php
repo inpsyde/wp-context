@@ -103,17 +103,19 @@ final class WpContext implements \JsonSerializable
             return true;
         }
 
+        if (!get_option('permalink_structure')) {
+            return !empty($_GET['rest_route']); // phpcs:ignore
+        }
+
         // This is needed because, if called early, global $wp_rewrite is not defined but required
         // by get_rest_url(). WP will reuse what we set here, or in worst case will replace, but no
         // consequences for us in any case.
-        if (get_option('permalink_structure') && empty($GLOBALS['wp_rewrite'])) {
+        if (empty($GLOBALS['wp_rewrite'])) {
             $GLOBALS['wp_rewrite'] = new \WP_Rewrite();
         }
 
-        $currentUrl = set_url_scheme(add_query_arg([]));
-        $restUrl = set_url_scheme(get_rest_url());
-        $currentPath = trim((string)parse_url((string)$currentUrl, PHP_URL_PATH), '/') . '/';
-        $restPath = trim((string)parse_url((string)$restUrl, PHP_URL_PATH), '/') . '/';
+        $currentPath = trim((string)parse_url((string)add_query_arg([]), PHP_URL_PATH), '/') . '/';
+        $restPath = trim((string)parse_url((string)get_rest_url(), PHP_URL_PATH), '/') . '/';
 
         return strpos($currentPath, $restPath) === 0;
     }
@@ -132,9 +134,10 @@ final class WpContext implements \JsonSerializable
             return true;
         }
 
-        $url = home_url((string)parse_url(add_query_arg([]), PHP_URL_PATH));
+        $currentPath = (string)parse_url(add_query_arg([]), PHP_URL_PATH);
+        $loginPath = (string)parse_url(wp_login_url(), PHP_URL_PATH);
 
-        return rtrim($url, '/') === rtrim(wp_login_url(), '/');
+        return rtrim($currentPath, '/') === rtrim($loginPath, '/');
     }
 
     /**

@@ -16,6 +16,9 @@ class WpContextTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
+    /**
+     * @var string
+     */
     private $currentPath = '/';
 
     /**
@@ -25,7 +28,7 @@ class WpContextTest extends TestCase
     {
         parent::setUp();
         Monkey\setUp();
-        Monkey\Functions\expect('add_query_arg')->with([])->andReturnUsing(function () {
+        Monkey\Functions\expect('add_query_arg')->with([])->andReturnUsing(function (): string {
             return $this->currentPath;
         });
     }
@@ -100,7 +103,6 @@ class WpContextTest extends TestCase
         $this->mockIsRestRequest(false);
         $this->mockIsLoginRequest(false);
 
-        /** @var callable|null $onLoginInit */
         $onLoginInit = null;
         Monkey\Actions\expectAdded('login_init')
             ->whenHappen(function (callable $callback) use (&$onLoginInit) {
@@ -111,6 +113,7 @@ class WpContextTest extends TestCase
 
         static::assertTrue($context->isCore());
         static::assertFalse($context->isLogin());
+        /** @var callable $onLoginInit */
         $onLoginInit();
         static::assertTrue($context->isLogin());
     }
@@ -156,7 +159,6 @@ class WpContextTest extends TestCase
         $this->mockIsRestRequest(false);
         $this->mockIsLoginRequest(false);
 
-        /** @var callable|null $onRestInit */
         $onRestInit = null;
         Monkey\Actions\expectAdded('rest_api_init')
             ->whenHappen(function (callable $callback) use (&$onRestInit) {
@@ -167,6 +169,7 @@ class WpContextTest extends TestCase
 
         static::assertTrue($context->isCore());
         static::assertFalse($context->isRest());
+        /** @var callable $onRestInit */
         $onRestInit();
         static::assertTrue($context->isRest());
     }
@@ -331,7 +334,7 @@ class WpContextTest extends TestCase
         $this->mockIsLoginRequest(true);
 
         $context = WpContext::determine();
-        $decoded = json_decode(json_encode($context), true);
+        $decoded = (array)json_decode((string)json_encode($context), true);
 
         static::assertTrue($decoded[WpContext::CORE]);
         static::assertTrue($decoded[WpContext::LOGIN]);
@@ -348,8 +351,8 @@ class WpContextTest extends TestCase
      */
     private function mockIsRestRequest(bool $is): void
     {
-        Monkey\Functions\expect('get_option')->with('permalink_structure')->andReturn(false);
-        Monkey\Functions\stubs(['set_url_scheme']);
+        Monkey\Functions\expect('get_option')->with('permalink_structure')->andReturn(true);
+        $GLOBALS['wp_rewrite'] = \Mockery::mock('WP_Rewrite');
         Monkey\Functions\when('get_rest_url')->justReturn('https://example.com/wp-json');
         $is and $this->currentPath = '/wp-json/foo';
     }
@@ -361,7 +364,7 @@ class WpContextTest extends TestCase
     {
         $is and $this->currentPath = '/wp-login.php';
         Monkey\Functions\when('wp_login_url')->justReturn('https://example.com/wp-login.php');
-        Monkey\Functions\when('home_url')->alias(static function ($path = '') {
+        Monkey\Functions\when('home_url')->alias(static function (string $path = ''): string {
             return 'https://example.com/' . ltrim($path, '/');
         });
     }
