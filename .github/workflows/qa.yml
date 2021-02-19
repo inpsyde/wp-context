@@ -1,31 +1,50 @@
 name: PHP Quality Assurance
-on: [push]
+on: [push, pull_request]
 jobs:
-    build:
+    tests:
         runs-on: ubuntu-latest
         if: "!contains(github.event.head_commit.message, 'ci skip')"
         strategy:
+            fail-fast: true
             matrix:
-                php-versions: ['7.1', '7.2', '7.3', '7.4']
+                php-versions: ['7.1', '7.2', '7.3', '7.4', '8.0']
         steps:
-            -   uses: actions/checkout@v2
+            - uses: actions/checkout@v2
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php-versions }}
+
+            - name: Check syntax error in sources
+              run: find ./src/ ./tests/ -type f -name '*.php' -print0 | xargs -0 -L 1 -P 4 -- php -l
+
+            - name: Install dependencies
+              uses: "ramsey/composer-install@v1"
+
+            - name: Run unit tests
+              run: composer tests:no-cov
+
+    static:
+        runs-on: ubuntu-latest
+        if: "!contains(github.event.head_commit.message, 'ci skip')"
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v2
 
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: ${{ matrix.php-versions }}
-
-            -   name: Check syntax error in sources
-                run: find ./src/ ./tests/ -type f -name '*.php' -print0 | xargs -0 -L 1 -P 4 -- php -l
+                    php-version: 7.4
 
             -   name: Install dependencies
-                run: composer install -q -n -a --no-progress --prefer-dist
-
-            -   name: Run unit tests
-                run: ./vendor/bin/phpunit --no-coverage
+                uses: "ramsey/composer-install@v1"
 
             -   name: Check code styles
-                run: ./vendor/bin/phpcs
+                run: composer cs
 
             -   name: Check Psalm
-                run: ./vendor/bin/psalm --show-info=false --no-progress --output-format=compact
+                run: composer psalm
+
+            -   name: Check cross-version PHP compatibility
+                run: composer phpcompat
