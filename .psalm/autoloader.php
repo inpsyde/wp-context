@@ -3,7 +3,7 @@ if (defined('ABSPATH')) {
     return;
 }
 
-define('ABSPATH', './vendor/roots/wordpress/');
+define('ABSPATH', './vendor/johnpbloch/wordpress-core/');
 define('WPINC', 'wp-includes');
 define('WP_CONTENT_DIR', ABSPATH . 'wp-content');
 

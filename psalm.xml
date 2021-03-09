@@ -21,5 +21,6 @@
 
    <issueHandlers>
         <MixedAssignment errorLevel="suppress" />
+        <RedundantCastGivenDocblockType errorLevel="suppress" />
     </issueHandlers>
 </psalm>

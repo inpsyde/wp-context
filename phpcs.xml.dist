@@ -2,10 +2,20 @@
 <ruleset>
 
     <file>./src/</file>
+    <file>./tests/</file>
 
     <arg value="sp"/>
     <arg name="colors"/>
-    <config name="testVersion" value="7.2-"/>
+    <config name="testVersion" value="7.1-"/>
 
     <rule ref="Inpsyde"/>
+
+    <rule ref="Inpsyde.CodeQuality.Psr4">
+        <properties>
+            <property
+                name="psr4"
+                type="array"
+                value="Inpsyde=>src,Inpsyde\Tests=>tests"/>
+        </properties>
+    </rule>
 </ruleset>

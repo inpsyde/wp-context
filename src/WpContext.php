@@ -45,7 +45,7 @@ final class WpContext implements \JsonSerializable
      */
     public static function new(): WpContext
     {
-        return new static(array_fill_keys(self::ALL, false));
+        return new self(array_fill_keys(self::ALL, false));
     }
 
     /**
@@ -70,9 +70,11 @@ final class WpContext implements \JsonSerializable
         // When nothing else matches, we assume it is a front-office request.
         $isFront = $undetermined && !$isRest && !$isLogin;
 
-        // Note that when core is installing **only** `INSTALLING` will be true, not even `CORE`.
-        // This is done to do as less as possible during installation, when most of WP does not act
-        // as expected.
+        /*
+         * Note that when core is installing **only** `INSTALLING` will be true, not even `CORE`.
+         * This is done to do as less as possible during installation, when most of WP does not act
+         * as expected.
+         */
 
         $instance = new self(
             [
@@ -107,9 +109,11 @@ final class WpContext implements \JsonSerializable
             return !empty($_GET['rest_route']); // phpcs:ignore
         }
 
-        // This is needed because, if called early, global $wp_rewrite is not defined but required
-        // by get_rest_url(). WP will reuse what we set here, or in worst case will replace, but no
-        // consequences for us in any case.
+        /*
+         * This is needed because, if called early, global $wp_rewrite is not defined but required
+         * by get_rest_url(). WP will reuse what we set here, or in worst case will replace, but no
+         * consequences for us in any case.
+         */
         if (empty($GLOBALS['wp_rewrite'])) {
             $GLOBALS['wp_rewrite'] = new \WP_Rewrite();
         }
@@ -282,7 +286,7 @@ final class WpContext implements \JsonSerializable
     /**
      * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->data;
     }
@@ -328,6 +332,7 @@ final class WpContext implements \JsonSerializable
         foreach ($this->actionCallbacks as $action => $callback) {
             remove_action($action, $callback, PHP_INT_MIN);
         }
+        $this->actionCallbacks = [];
     }
 
     /**
@@ -341,5 +346,7 @@ final class WpContext implements \JsonSerializable
         $this->data[self::CORE] = true;
         $this->data[self::CLI] = $cli;
         $this->data[$context] = true;
+
+        $this->removeActionHooks();
     }
 }

@@ -1,4 +1,4 @@
-<?php # -*- coding: utf-8 -*-
+<?php
 
 declare(strict_types=1);
 
@@ -28,9 +28,11 @@ class WpContextTest extends TestCase
     {
         parent::setUp();
         Monkey\setUp();
-        Monkey\Functions\expect('add_query_arg')->with([])->andReturnUsing(function (): string {
-            return $this->currentPath;
-        });
+        Monkey\Functions\expect('add_query_arg')
+            ->with([])
+            ->andReturnUsing(function (): string {
+                return $this->currentPath;
+            });
     }
 
     /**
@@ -105,7 +107,7 @@ class WpContextTest extends TestCase
 
         $onLoginInit = null;
         Monkey\Actions\expectAdded('login_init')
-            ->whenHappen(function (callable $callback) use (&$onLoginInit) {
+            ->whenHappen(static function (callable $callback) use (&$onLoginInit) {
                 $onLoginInit = $callback;
             });
 
@@ -161,7 +163,7 @@ class WpContextTest extends TestCase
 
         $onRestInit = null;
         Monkey\Actions\expectAdded('rest_api_init')
-            ->whenHappen(function (callable $callback) use (&$onRestInit) {
+            ->whenHappen(static function (callable $callback) use (&$onRestInit) {
                 $onRestInit = $callback;
             });
 
@@ -364,8 +366,9 @@ class WpContextTest extends TestCase
     {
         $is and $this->currentPath = '/wp-login.php';
         Monkey\Functions\when('wp_login_url')->justReturn('https://example.com/wp-login.php');
-        Monkey\Functions\when('home_url')->alias(static function (string $path = ''): string {
-            return 'https://example.com/' . ltrim($path, '/');
-        });
+        Monkey\Functions\when('home_url')
+            ->alias(static function (string $path = ''): string {
+                return 'https://example.com/' . ltrim($path, '/');
+            });
     }
 }
