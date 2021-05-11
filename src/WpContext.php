@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Inpsyde;
 
-final class WpContext implements \JsonSerializable
+class WpContext implements \JsonSerializable
 {
     public const AJAX = 'ajax';
     public const BACKOFFICE = 'backoffice';
@@ -43,7 +43,7 @@ final class WpContext implements \JsonSerializable
     /**
      * @return WpContext
      */
-    public static function new(): WpContext
+    final public static function new(): WpContext
     {
         return new self(array_fill_keys(self::ALL, false));
     }
@@ -51,7 +51,7 @@ final class WpContext implements \JsonSerializable
     /**
      * @return WpContext
      */
-    public static function determine(): WpContext
+    final public static function determine(): WpContext
     {
         $installing = defined('WP_INSTALLING') && WP_INSTALLING;
         $xmlRpc = defined('XMLRPC_REQUEST') && XMLRPC_REQUEST;
@@ -156,7 +156,7 @@ final class WpContext implements \JsonSerializable
      * @param string $context
      * @return WpContext
      */
-    public function force(string $context): WpContext
+    final public function force(string $context): WpContext
     {
         if (!in_array($context, self::ALL, true)) {
             throw new \LogicException("'{$context}' is not a valid context.");
@@ -178,7 +178,7 @@ final class WpContext implements \JsonSerializable
     /**
      * @return WpContext
      */
-    public function withCli(): WpContext
+    final public function withCli(): WpContext
     {
         $this->data[self::CLI] = true;
 
@@ -190,7 +190,7 @@ final class WpContext implements \JsonSerializable
      * @param string ...$contexts
      * @return bool
      */
-    public function is(string $context, string ...$contexts): bool
+    final public function is(string $context, string ...$contexts): bool
     {
         array_unshift($contexts, $context);
 
