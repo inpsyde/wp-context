@@ -295,6 +295,101 @@ class WpContextTest extends TestCase
     /**
      * @test
      */
+    public function testIsInstalling(): void
+    {
+        define('ABSPATH', __DIR__);
+        define('WP_INSTALLING', true);
+        Monkey\Functions\when('wp_doing_ajax')->justReturn(false);
+        Monkey\Functions\when('is_admin')->justReturn(false);
+        Monkey\Functions\when('wp_doing_cron')->justReturn(false);
+        $this->mockIsRestRequest(false);
+        $this->mockIsLoginRequest(false);
+        $this->mockIsActivateRequest(false);
+
+        $context = WpContext::determine();
+
+        static::assertFalse($context->isCore());
+        static::assertFalse($context->isWpActivate());
+        static::assertTrue($context->isInstalling());
+        static::assertFalse($context->isLogin());
+        static::assertFalse($context->isRest());
+        static::assertFalse($context->isCron());
+        static::assertFalse($context->isFrontoffice());
+        static::assertFalse($context->isBackoffice());
+        static::assertFalse($context->isAjax());
+        static::assertFalse($context->isWpCli());
+        static::assertFalse($context->isXmlRpc());
+
+        static::assertTrue($context->is(WpContext::INSTALLING));
+        static::assertTrue($context->is(WpContext::INSTALLING, WpContext::BACKOFFICE));
+        static::assertFalse($context->is(WpContext::CRON, WpContext::BACKOFFICE));
+        static::assertFalse($context->is(WpContext::CRON, WpContext::BACKOFFICE, WpContext::CORE));
+    }
+
+    /**
+     * @test
+     */
+    public function testIsWpActivate(): void
+    {
+        define('ABSPATH', __DIR__);
+        define('WP_INSTALLING', true);
+        Monkey\Functions\when('wp_doing_ajax')->justReturn(false);
+        Monkey\Functions\when('is_admin')->justReturn(false);
+        Monkey\Functions\when('wp_doing_cron')->justReturn(false);
+        $this->mockIsRestRequest(false);
+        $this->mockIsLoginRequest(false);
+        $this->mockIsActivateRequest(true);
+
+        $context = WpContext::determine();
+
+        static::assertTrue($context->isCore());
+        static::assertTrue($context->isWpActivate());
+        static::assertFalse($context->isInstalling());
+        static::assertFalse($context->isLogin());
+        static::assertFalse($context->isRest());
+        static::assertFalse($context->isCron());
+        static::assertFalse($context->isFrontoffice());
+        static::assertFalse($context->isBackoffice());
+        static::assertFalse($context->isAjax());
+        static::assertFalse($context->isWpCli());
+
+        static::assertTrue($context->is(WpContext::WP_ACTIVATE));
+        static::assertTrue($context->is(WpContext::WP_ACTIVATE, WpContext::BACKOFFICE));
+        static::assertFalse($context->is(WpContext::CRON, WpContext::BACKOFFICE));
+        static::assertTrue($context->is(WpContext::CRON, WpContext::BACKOFFICE, WpContext::CORE));
+    }
+
+    /**
+     * @test
+     */
+    public function testIsWpActivateLate(): void
+    {
+        define('ABSPATH', __DIR__);
+        Monkey\Functions\when('wp_doing_ajax')->justReturn(false);
+        Monkey\Functions\when('is_admin')->justReturn(false);
+        Monkey\Functions\when('wp_doing_cron')->justReturn(false);
+        $this->mockIsRestRequest(false);
+        $this->mockIsLoginRequest(false);
+        $this->mockIsActivateRequest(false);
+
+        $onActivateHeader = null;
+        Monkey\Actions\expectAdded('activate_header')
+            ->whenHappen(static function (callable $callback) use (&$onActivateHeader) {
+                $onActivateHeader = $callback;
+            });
+
+        $context = WpContext::determine();
+
+        static::assertTrue($context->isCore());
+        static::assertFalse($context->isWpActivate());
+        /** @var callable $onActivateHeader */
+        $onActivateHeader();
+        static::assertTrue($context->isWpActivate());
+    }
+
+    /**
+     * @test
+     */
     public function testIsCli(): void
     {
         define('ABSPATH', __DIR__);
@@ -366,9 +461,18 @@ class WpContextTest extends TestCase
     {
         $is and $this->currentPath = '/wp-login.php';
         Monkey\Functions\when('wp_login_url')->justReturn('https://example.com/wp-login.php');
-        Monkey\Functions\when('home_url')
-            ->alias(static function (string $path = ''): string {
-                return 'https://example.com/' . ltrim($path, '/');
-            });
+    }
+
+    /**
+     * @param bool $is
+     */
+    private function mockIsActivateRequest(bool $is): void
+    {
+        Monkey\Functions\when('is_multisite')->justReturn($is);
+
+        $is and $this->currentPath = '/wp-activate.php';
+        Monkey\Functions\when('network_site_url')->alias(static function (string $path): string {
+            return 'https://example.com/' . ltrim($path, '/');
+        });
     }
 }
