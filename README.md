@@ -81,11 +81,11 @@ The previous section states:
 
 but there's an exception to that.
 
-When visiting `/wp-activate.php` the constant `WP_INSTALLING` is defined and true, however the issues that usually apply in that case (WP not fully reliable) don't apply there, in fact, no "installations" happens when in `/wp-activate.php` and WP is fully loaded.
+When visiting `/wp-activate.php` the constant `WP_INSTALLING` is defined and true, however the issues that usually apply in that case (WP not fully reliable) don't apply there. In fact, when in `/wp-activate.php`, no "installations" happens, and WP is fully loaded.
 
-This is why  `/wp-activate.php` is a sort of "special case" and WP Context can determine that case via `WpContext::isWpActivate()`. When that returns true, `WpContext::isInstalling()` will return false, and `WpContext::isCore()` will return true, even if `WP_INSTALLING` is defined and true.
+This is why `/wp-activate.php` is a sort of "special case" and WP Context can determine that case via `WpContext::isWpActivate()`. When that returns true, `WpContext::isInstalling()` will return false, and `WpContext::isCore()` will return true, even if `WP_INSTALLING` is defined and true.
 
-Please note that `/wp-activate.php` is only available for multisite installations.
+Please note that `/wp-activate.php` is only available for multisite installations and `WpContext::isWpActivate()` will always return false in single-site installations.
 
 
 
