@@ -105,12 +105,15 @@ class WpContext implements \JsonSerializable
      */
     private static function isRestRequest(): bool
     {
-        if (defined('REST_REQUEST') && REST_REQUEST) {
+        if (
+            (defined('REST_REQUEST') && REST_REQUEST)
+            || !empty($_GET['rest_route']) // phpcs:ignore
+        ) {
             return true;
         }
 
         if (!get_option('permalink_structure')) {
-            return !empty($_GET['rest_route']); // phpcs:ignore
+            return false;
         }
 
         /*
