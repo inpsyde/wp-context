@@ -52,6 +52,14 @@
             "@tests:no-cov"
         ]
     },
+    "config": {
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "inpsyde/*": true,
+            "composer/*": true
+        }
+    },
     "extra": {
         "branch-alias": {
             "dev-main": "1.x-dev"
