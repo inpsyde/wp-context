@@ -55,7 +55,9 @@ class WpContext implements \JsonSerializable
      */
     final public static function determine(): WpContext
     {
+        /** @psalm-suppress RedundantCondition */
         $installing = defined('WP_INSTALLING') && WP_INSTALLING;
+        /** @psalm-suppress RedundantCondition */
         $xmlRpc = defined('XMLRPC_REQUEST') && XMLRPC_REQUEST;
         $isCore = defined('ABSPATH');
         $isCli = defined('WP_CLI');
@@ -138,7 +140,7 @@ class WpContext implements \JsonSerializable
     {
         /** TODO: we'll just use is_login_screen() when 6.1 will be the min WP supported version */
         if (function_exists('is_login_screen')) {
-            return is_login_screen();
+            return is_login_screen() !== false;
         }
 
         if (!empty($_REQUEST['interim-login'])) { // phpcs:ignore
