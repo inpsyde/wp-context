@@ -8,6 +8,7 @@ on:
             - '**phpcs.xml.dist'
             - '**phpunit.xml.dist'
             - '**psalm.xml'
+            - '**composer.json'
     workflow_dispatch:
         inputs:
             jobs:
