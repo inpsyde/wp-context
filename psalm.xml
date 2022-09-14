@@ -1,17 +1,21 @@
 <?xml version="1.0"?>
 <psalm
-    autoloader="./.psalm/autoloader.php"
-    totallyTyped="true"
+    errorLevel="1"
     useDocblockPropertyTypes="true"
     usePhpDocMethodsWithoutMagicCall="true"
     strictBinaryOperands="true"
     ignoreInternalFunctionFalseReturn="false"
     ignoreInternalFunctionNullReturn="false"
     hideExternalErrors="true"
+    allowNamedArgumentCalls="false"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
 >
+    <stubs>
+        <file name="vendor/inpsyde/wp-stubs/stubs/latest.php" />
+    </stubs>
+
     <projectFiles>
         <directory name="src"/>
         <ignoreFiles>

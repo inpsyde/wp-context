@@ -1,50 +1,42 @@
-name: PHP Quality Assurance
-on: [push, pull_request]
+name: Quality assurance PHP
+
+on:
+    push:
+        paths:
+            - '**workflows/qa.yml'
+            - '**.php'
+            - '**phpcs.xml.dist'
+            - '**phpunit.xml.dist'
+            - '**psalm.xml'
+    workflow_dispatch:
+        inputs:
+            jobs:
+                required: true
+                type: choice
+                default: 'Run all'
+                description: 'Choose jobs to run'
+                options:
+                    - 'Run all'
+                    - 'Run PHPCS only'
+                    - 'Run Psalm only'
+                    - 'Run static analysis (PHPCS + Psalm)'
+                    - 'Run unit tests only'
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
 jobs:
-    tests:
-        runs-on: ubuntu-latest
-        if: "!contains(github.event.head_commit.message, 'ci skip')"
-        strategy:
-            fail-fast: true
-            matrix:
-                php-versions: ['7.1', '7.2', '7.3', '7.4', '8.0']
-        steps:
-            - uses: actions/checkout@v2
+    coding-standards-analysis-php:
+        if: ${{ (github.event_name != 'workflow_dispatch') || ((github.event.inputs.jobs != 'Run unit tests only') && (github.event.inputs.jobs != 'Run Psalm only')) }}
+        uses: inpsyde/reusable-workflows/.github/workflows/coding-standards-php.yml@main
 
-            - name: Setup PHP
-              uses: shivammathur/setup-php@v2
-              with:
-                  php-version: ${{ matrix.php-versions }}
+    static-code-analysis-php:
+        if: ${{ (github.event_name != 'workflow_dispatch') || ((github.event.inputs.jobs != 'Run unit tests only') && (github.event.inputs.jobs != 'Run PHPCS only')) }}
+        uses: inpsyde/reusable-workflows/.github/workflows/static-analysis-php.yml@main
 
-            - name: Check syntax error in sources
-              run: find ./src/ ./tests/ -type f -name '*.php' -print0 | xargs -0 -L 1 -P 4 -- php -l
-
-            - name: Install dependencies
-              uses: "ramsey/composer-install@v1"
-
-            - name: Run unit tests
-              run: composer tests:no-cov
-
-    static:
-        runs-on: ubuntu-latest
-        if: "!contains(github.event.head_commit.message, 'ci skip')"
-        steps:
-            -   name: Checkout
-                uses: actions/checkout@v2
-
-            -   name: Setup PHP
-                uses: shivammathur/setup-php@v2
-                with:
-                    php-version: 7.4
-
-            -   name: Install dependencies
-                uses: "ramsey/composer-install@v1"
-
-            -   name: Check code styles
-                run: composer cs
-
-            -   name: Check Psalm
-                run: composer psalm
-
-            -   name: Check cross-version PHP compatibility
-                run: composer phpcompat
+    tests-unit-php:
+        if: ${{ (github.event_name != 'workflow_dispatch') || ((github.event.inputs.jobs == 'Run all') || (github.event.inputs.jobs == 'Run unit tests only')) }}
+        uses: inpsyde/reusable-workflows/.github/workflows/tests-unit-php.yml@main
+        with:
+            PHP_MATRIX: '["7.1", "7.2", "7.3", "7.4", "8.0", "8.1"]'
