@@ -138,9 +138,12 @@ class WpContext implements \JsonSerializable
      */
     private static function isLoginRequest(): bool
     {
-        /** TODO: we'll just use is_login_screen() when 6.1 will be the min WP supported version */
-        if (function_exists('is_login_screen')) {
-            return is_login_screen() !== false;
+        /**
+         * New core function with WordPress 6.1
+         * @link https://make.wordpress.org/core/2022/09/11/new-is_login-function-for-determining-if-a-page-is-the-login-screen/
+         */
+        if (function_exists('is_login')) {
+            return is_login() !== false;
         }
 
         if (!empty($_REQUEST['interim-login'])) { // phpcs:ignore
