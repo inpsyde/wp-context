@@ -460,7 +460,7 @@ class WpContextTest extends TestCase
     private function mockIsLoginRequest(bool $is): void
     {
         $is and $this->currentPath = '/wp-login.php';
-        Monkey\Functions\when('wp_login_url')->justReturn('https://example.com/wp-login.php');
+        Monkey\Functions\when('is_login')->justReturn($is);
     }
 
     /**
