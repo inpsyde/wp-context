@@ -150,7 +150,11 @@ class WpContext implements \JsonSerializable
             return true;
         }
 
-        return static::isPageNow('wp-login.php', wp_login_url());
+        /**
+         * Fallback and 1:1 copy from is_login() in case, the function is
+         * not available for WP < 6.1.
+         */
+        return false !== stripos(wp_login_url(), $_SERVER['SCRIPT_NAME']);
     }
 
     /**
