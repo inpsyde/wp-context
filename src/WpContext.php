@@ -157,7 +157,9 @@ class WpContext implements \JsonSerializable
          * phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
          * phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
          */
-        return false !== stripos(wp_login_url(), $_SERVER['SCRIPT_NAME']);
+        $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
+
+        return false !== stripos(wp_login_url(), $scriptName);
     }
 
     /**
