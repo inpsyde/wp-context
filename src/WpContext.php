@@ -153,6 +153,9 @@ class WpContext implements \JsonSerializable
         /**
          * Fallback and 1:1 copy from is_login() in case, the function is
          * not available for WP < 6.1.
+         * phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+         * phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+         * phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
          */
         return false !== stripos(wp_login_url(), $_SERVER['SCRIPT_NAME']);
     }
