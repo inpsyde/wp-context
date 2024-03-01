@@ -16,10 +16,7 @@ class WpContextTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
-    /**
-     * @var string
-     */
-    private $currentPath = '/';
+    private string $currentPath = '/';
 
     /**
      * @return void
@@ -107,9 +104,11 @@ class WpContextTest extends TestCase
 
         $onLoginInit = null;
         Monkey\Actions\expectAdded('login_init')
-            ->whenHappen(static function (callable $callback) use (&$onLoginInit) {
-                $onLoginInit = $callback;
-            });
+            ->whenHappen(
+                static function (callable $callback) use (&$onLoginInit): void {
+                    $onLoginInit = $callback;
+                }
+            );
 
         $context = WpContext::determine();
 
@@ -163,9 +162,11 @@ class WpContextTest extends TestCase
 
         $onRestInit = null;
         Monkey\Actions\expectAdded('rest_api_init')
-            ->whenHappen(static function (callable $callback) use (&$onRestInit) {
-                $onRestInit = $callback;
-            });
+            ->whenHappen(
+                static function (callable $callback) use (&$onRestInit): void {
+                    $onRestInit = $callback;
+                }
+            );
 
         $context = WpContext::determine();
 
@@ -374,9 +375,11 @@ class WpContextTest extends TestCase
 
         $onActivateHeader = null;
         Monkey\Actions\expectAdded('activate_header')
-            ->whenHappen(static function (callable $callback) use (&$onActivateHeader) {
-                $onActivateHeader = $callback;
-            });
+            ->whenHappen(
+                static function (callable $callback) use (&$onActivateHeader): void {
+                    $onActivateHeader = $callback;
+                }
+            );
 
         $context = WpContext::determine();
 
@@ -431,7 +434,7 @@ class WpContextTest extends TestCase
         $this->mockIsLoginRequest(true);
 
         $context = WpContext::determine();
-        $decoded = (array)json_decode((string)json_encode($context), true);
+        $decoded = (array) json_decode((string) json_encode($context), true);
 
         static::assertTrue($decoded[WpContext::CORE]);
         static::assertTrue($decoded[WpContext::LOGIN]);
@@ -445,6 +448,7 @@ class WpContextTest extends TestCase
 
     /**
      * @param bool $is
+     * @return void
      */
     private function mockIsRestRequest(bool $is): void
     {
@@ -456,6 +460,7 @@ class WpContextTest extends TestCase
 
     /**
      * @param bool $is
+     * @return void
      */
     private function mockIsLoginRequest(bool $is): void
     {
@@ -465,6 +470,7 @@ class WpContextTest extends TestCase
 
     /**
      * @param bool $is
+     * @return void
      */
     private function mockIsActivateRequest(bool $is): void
     {

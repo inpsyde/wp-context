@@ -18,6 +18,7 @@ class WpContext implements \JsonSerializable
     public const XML_RPC = 'xml-rpc';
     public const WP_ACTIVATE = 'wp-activate';
 
+    private const ACTIONS_PRIORITY = -300982;
     private const ALL = [
         self::AJAX,
         self::BACKOFFICE,
@@ -32,15 +33,11 @@ class WpContext implements \JsonSerializable
         self::WP_ACTIVATE,
     ];
 
-    /**
-     * @var array
-     */
-    private $data;
+    /** @var array<value-of<WpContext::ALL>, bool> */
+    private array $data;
 
-    /**
-     * @var array<string, callable>
-     */
-    private $actionCallbacks = [];
+    /** @var array<string, callable> */
+    private array $actionCallbacks = [];
 
     /**
      * @return WpContext
@@ -107,9 +104,10 @@ class WpContext implements \JsonSerializable
      */
     private static function isRestRequest(): bool
     {
+        /** @psalm-suppress RedundantCondition */
         if (
-            (defined('REST_REQUEST') && REST_REQUEST)
-            || !empty($_GET['rest_route']) // phpcs:ignore
+            (defined('REST_REQUEST') && \REST_REQUEST)
+            || (isset($_GET['rest_route']) && (bool) $_GET['rest_route']) // phpcs:ignore
         ) {
             return true;
         }
@@ -127,8 +125,11 @@ class WpContext implements \JsonSerializable
             $GLOBALS['wp_rewrite'] = new \WP_Rewrite();
         }
 
-        $currentPath = trim((string)parse_url((string)add_query_arg([]), PHP_URL_PATH), '/') . '/';
-        $restPath = trim((string)parse_url((string)get_rest_url(), PHP_URL_PATH), '/') . '/';
+        $currentUrl = (string) parse_url((string) add_query_arg([]), PHP_URL_PATH);
+        $currentPath = trim($currentUrl, '/') . '/';
+
+        $restUrlPath = (string) parse_url((string) get_rest_url(), PHP_URL_PATH);
+        $restPath = trim($restUrlPath, '/') . '/';
 
         return strpos($currentPath, $restPath) === 0;
     }
@@ -138,28 +139,7 @@ class WpContext implements \JsonSerializable
      */
     private static function isLoginRequest(): bool
     {
-        /**
-         * New core function with WordPress 6.1
-         * @link https://make.wordpress.org/core/2022/09/11/new-is_login-function-for-determining-if-a-page-is-the-login-screen/
-         */
-        if (function_exists('is_login')) {
-            return is_login() !== false;
-        }
-
-        if (!empty($_REQUEST['interim-login'])) { // phpcs:ignore
-            return true;
-        }
-
-        /**
-         * Fallback and 1:1 copy from is_login() in case, the function is
-         * not available for WP < 6.1.
-         * phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
-         * phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
-         * phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-         */
-        $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
-
-        return false !== stripos(wp_login_url(), $scriptName);
+        return is_login() !== false;
     }
 
     /**
@@ -177,19 +157,19 @@ class WpContext implements \JsonSerializable
      */
     private static function isPageNow(string $page, string $url): bool
     {
-        $pageNow = (string)($GLOBALS['pagenow'] ?? '');
+        $pageNow = (string) ($GLOBALS['pagenow'] ?? '');
         if ($pageNow && (basename($pageNow) === $page)) {
             return true;
         }
 
-        $currentPath = (string)parse_url(add_query_arg([]), PHP_URL_PATH);
-        $targetPath = (string)parse_url($url, PHP_URL_PATH);
+        $currentPath = (string) parse_url(add_query_arg([]), PHP_URL_PATH);
+        $targetPath = (string) parse_url($url, PHP_URL_PATH);
 
         return trim($currentPath, '/') === trim($targetPath, '/');
     }
 
     /**
-     * @param array $data
+     * @param array<value-of<WpContext::ALL>, bool> $data
      */
     private function __construct(array $data)
     {
@@ -203,7 +183,7 @@ class WpContext implements \JsonSerializable
     final public function force(string $context): WpContext
     {
         if (!in_array($context, self::ALL, true)) {
-            throw new \LogicException("'{$context}' is not a valid context.");
+            throw new \LogicException(esc_html("'{$context}' is not a valid context."));
         }
 
         $this->removeActionHooks();
@@ -336,7 +316,7 @@ class WpContext implements \JsonSerializable
     }
 
     /**
-     * @return array
+     * @return array<value-of<WpContext::ALL>, bool>
      */
     public function jsonSerialize(): array
     {
@@ -372,7 +352,7 @@ class WpContext implements \JsonSerializable
         ];
 
         foreach ($this->actionCallbacks as $action => $callback) {
-            add_action($action, $callback, PHP_INT_MIN);
+            add_action($action, $callback, self::ACTIONS_PRIORITY);
         }
     }
 
@@ -385,7 +365,7 @@ class WpContext implements \JsonSerializable
     private function removeActionHooks(): void
     {
         foreach ($this->actionCallbacks as $action => $callback) {
-            remove_action($action, $callback, PHP_INT_MIN);
+            remove_action($action, $callback, self::ACTIONS_PRIORITY);
         }
         $this->actionCallbacks = [];
     }
