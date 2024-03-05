@@ -138,21 +138,9 @@ assert($context->isWpCli());
 
 Note that `$context->force(WpContext::CLI)` can still be used to "simulate" requests that are _only_ WP CLI, not even `CORE`.
 
-
-
-## Crafted by Inpsyde
-
-The team at [Inpsyde](https://inpsyde.com) is engineering the Web since 2006.
-
-
-
 ## License
 
-Copyright (c) 2020 Inpsyde GmbH
-
-This library is released under ["GPL 2.0 or later" License](LICENSE).
-
-
+This repository is a free software, and is released under the terms of the GNU General Public License version 2 or (at your option) any later version. See [LICENSE](./LICENSE) for complete license.
 
 ## Contributing
 
