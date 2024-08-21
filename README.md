@@ -3,7 +3,7 @@
 A single-class utility to check the current request context in WordPress sites.
 
 ---
-![PHP Quality Assurance](https://github.com/inpsyde/wp-context/workflows/PHP%20Quality%20Assurance/badge.svg)
+[![PHP Quality Assurance](https://github.com/inpsyde/wp-context/actions/workflows/qa.yml/badge.svg)](https://github.com/inpsyde/wp-context/actions/workflows/qa.yml)
 ---
 
 ## How to use
