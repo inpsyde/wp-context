@@ -28,6 +28,14 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
+    lint-php:
+        strategy:
+          matrix:
+            php: ["7.1", "7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3"]
+        uses: inpsyde/reusable-workflows/.github/workflows/lint-php.yml@main
+        with:
+          PHP_VERSION: ${{ matrix.php }}
+
     coding-standards-analysis-php:
         if: ${{ (github.event_name != 'workflow_dispatch') || ((github.event.inputs.jobs != 'Run unit tests only') && (github.event.inputs.jobs != 'Run Psalm only')) }}
         uses: inpsyde/reusable-workflows/.github/workflows/coding-standards-php.yml@main
