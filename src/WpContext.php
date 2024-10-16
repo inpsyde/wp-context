@@ -103,7 +103,6 @@ class WpContext implements \JsonSerializable
     }
 
     /**
-     * @psalm-suppress RedundantCondition
      * @return bool
      */
     private static function isRestRequest(): bool
