@@ -2,12 +2,12 @@
     "name": "inpsyde/wp-context",
     "type": "library",
     "description": "A single-class utility to check the running context in WordPress sites.",
-    "license": "gpl-2.0-or-later",
+    "license": "GPL-2.0-or-later",
     "authors": [
         {
-            "name": "Inpsyde GmbH",
-            "homepage": "https://inpsyde.com/",
-            "email": "hello@inpsyde.com",
+            "name": "Syde GmbH",
+            "homepage": "https://syde.com/",
+            "email": "hello@syde.com",
             "role": "Company"
         },
         {
