@@ -26,13 +26,13 @@
         }
     ],
     "require": {
-        "php": ">=7.4 < 8.4",
+        "php": ">=7.4",
         "ext-json": "*"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.6.17",
+        "phpunit/phpunit": "^9.6.17 || ^10.5 || ^11.0",
         "inpsyde/php-coding-standards": "^2@dev",
-        "vimeo/psalm": "^5.22.2",
+        "vimeo/psalm": "^5.22.2 || ^6.0",
         "brain/monkey": "^2.6.1",
         "roots/wordpress-no-content": ">=6.1",
         "inpsyde/wp-stubs-versions": "dev-latest"

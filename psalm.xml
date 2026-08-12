@@ -26,5 +26,10 @@
         <MixedAssignment errorLevel="suppress" />
         <RedundantCastGivenDocblockType errorLevel="suppress" />
         <MissingClassConstType errorLevel="suppress" />
+        <!-- Psalm 6-only rules. Static analysis CI runs on PHP 8.1+ (Psalm 6). -->
+        <!-- Keep the class non-final for BC; factory methods are already final. -->
+        <ClassMustBeFinal errorLevel="suppress" />
+        <!-- Package still supports PHP 7.4, so #[\Override] cannot be used yet. -->
+        <MissingOverrideAttribute errorLevel="suppress" />
     </issueHandlers>
 </psalm>
